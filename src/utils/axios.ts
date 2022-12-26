@@ -1,6 +1,8 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 
-const service = axios.create(); // Request interceptors
+const service = axios.create({
+    baseURL: 'http://152.136.185.210:5000',
+}); // Request interceptors
 
 service.interceptors.request.use(
     (config: AxiosRequestConfig) => {

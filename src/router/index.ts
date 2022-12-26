@@ -2,6 +2,10 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
     {
+        path: '/',
+        redirect: '/login',
+    },
+    {
         path: '/login',
         name: 'Login',
         meta: {
@@ -9,10 +13,10 @@ const routes: Array<RouteRecordRaw> = [
             keepAlive: true,
             requireAuth: false,
         },
-        component: () => import('@/pages/login.vue'),
+        component: () => import('@/pages/login/Login.vue'),
     },
     {
-        path: '/',
+        path: '/main',
         name: 'Index',
         meta: {
             title: '首页',

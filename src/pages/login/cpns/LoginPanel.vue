@@ -9,7 +9,7 @@
                         <span>账号登陆</span>
                     </span>
                 </template>
-                <login-account></login-account>
+                <login-account ref="accountRef"></login-account>
             </el-tab-pane>
             <el-tab-pane>
                 <template #label>
@@ -49,9 +49,11 @@ import LoginPhone from './LoginPhone.vue';
 
 import { ref } from 'vue';
 
-const keepPassword = ref(false);
+const keepPassword = ref(true);
+const accountRef = ref<InstanceType<typeof LoginAccount>>();
+
 const handelLoginClick = () => {
-    console.log('登录');
+    accountRef.value?.loginAction(keepPassword.value);
 };
 </script>
 

@@ -39,10 +39,19 @@ export const useUserStore = defineStore('user', {
         async getUserMenuAction(id: number) {
             const res = await getUserMenuByRole(id);
             const data = res.data;
+
+            //自己添加的menu
+            data.data.unshift({
+                children: [],
+                id: 99999,
+                type: 1,
+                name: '首页',
+                url: '/main/main',
+            });
             this.userMenus = data.data;
             localCache.setCache('userMenus', data.data);
 
-            router.push('/main');
+            router.push('/');
         },
     },
     // 使用该插件，开启数据缓存

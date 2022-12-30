@@ -3,10 +3,6 @@ import localCache from '@/utils/cache';
 
 const routes: Array<RouteRecordRaw> = [
     {
-        path: '/',
-        redirect: '/main',
-    },
-    {
         path: '/login',
         name: 'Login',
         meta: {
@@ -17,14 +13,24 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/pages/login/Login.vue'),
     },
     {
-        path: '/main',
-        name: 'Main',
-        meta: {
-            title: '首页',
-            keepAlive: true,
-            requireAuth: true,
+        path: '/',
+        redirect: {
+            name: 'Main',
         },
-        component: () => import('@/pages/main/main.vue'),
+        component: () => import('@/components/layout/Layout.vue'),
+
+        children: [
+            {
+                path: 'main',
+                name: 'Main',
+                meta: {
+                    title: '首页',
+                    keepAlive: true,
+                    requireAuth: true,
+                },
+                component: () => import('@/pages/main/Main.vue'),
+            },
+        ],
     },
 ];
 

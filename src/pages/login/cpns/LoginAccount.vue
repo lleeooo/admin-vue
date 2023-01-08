@@ -39,6 +39,9 @@ const formRef = ref<FormInstance>();
 const loginAction = (isKeepPassword: boolean) => {
     formRef.value?.validate((valid) => {
         if (valid) {
+            //重新登录时 初始化pinia state
+            userStore.$reset();
+
             //是否记住密码
             if (isKeepPassword) {
                 localCache.setCache('name', form.name);

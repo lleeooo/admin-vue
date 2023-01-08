@@ -1,5 +1,7 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, RouteRecordRaw, createWebHashHistory } from 'vue-router';
 import localCache from '@/utils/cache';
+import { useUserStore } from '@/store/user/user';
+import mapMenusToRouter from './mapMenusToRouter';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -14,37 +16,44 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/',
+        name: 'Index',
         redirect: {
             name: 'Main',
         },
         component: () => import('@/components/layout/Layout.vue'),
-
-        children: [
-            {
-                path: 'main',
-                name: 'Main',
-                meta: {
-                    title: '首页',
-                    keepAlive: true,
-                    requireAuth: true,
-                },
-                component: () => import('@/pages/main/Main.vue'),
-            },
-        ],
+        children: [],
+    },
+    //缺省
+    {
+        path: '/:pathMatch(.*)*',
+        name: '404',
+        component: () => import('@/pages/404/404.vue'),
     },
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 });
-
-router.beforeEach((to) => {
+//hasInitAuth刷新判断
+let hasInitAuth = true;
+router.beforeEach((to, from, next) => {
     if (to.path !== '/login') {
         const token = localCache.getCache('token');
         if (!token) {
-            return '/login';
+            next({ path: '/login' });
+        } else {
+            if (hasInitAuth) {
+                const userStore = useUserStore();
+                mapMenusToRouter(userStore.userMenus);
+                hasInitAuth = false;
+                next({ path: userStore.currRouteUrl });
+            } else {
+                next();
+            }
         }
+    } else {
+        next();
     }
 });
 

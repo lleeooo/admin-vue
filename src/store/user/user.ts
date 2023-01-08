@@ -6,6 +6,7 @@ import {
     getUserMenuByRole,
 } from '@/api/login/login';
 import localCache from '@/utils/cache';
+import mapMenusToRouter from '@/router/mapMenusToRouter';
 import router from '@/router';
 
 export const useUserStore = defineStore('user', {
@@ -14,6 +15,9 @@ export const useUserStore = defineStore('user', {
             token: '',
             userInfo: {},
             userMenus: [],
+            currRouteUrl: '/',
+            hasInitAuth: true,
+            currMenuId: 99999,
         };
     },
     actions: {
@@ -50,7 +54,8 @@ export const useUserStore = defineStore('user', {
             });
             this.userMenus = data.data;
             localCache.setCache('userMenus', data.data);
-
+            //动态更具menu生成router路由
+            mapMenusToRouter(data.data);
             router.push('/');
         },
     },

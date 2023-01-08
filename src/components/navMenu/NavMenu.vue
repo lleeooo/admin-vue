@@ -13,11 +13,13 @@
             text-color="#fff"
             :collapse="isCollapse ? true : false"
             :collapse-transition="false"
+            :default-active="`${userStore.currMenuId}`"
         >
             <template v-for="(item, index) in userMenus" :key="item.id">
                 <el-menu-item
                     v-if="!item.children.length && item.type === 1"
                     :index="`${item.id}`"
+                    @click="meunItemClick(item)"
                 >
                     <el-icon><component :is="iconList[index]" /></el-icon>
                     <span>{{ item.name }}</span>
@@ -30,9 +32,12 @@
                         <span>{{ item.name }}</span>
                     </template>
                     <template v-for="jtem in item.children" :key="jtem.id">
-                        <el-menu-item :index="`${jtem.id}`">{{
-                            jtem.name
-                        }}</el-menu-item>
+                        <el-menu-item
+                            :index="`${jtem.id}`"
+                            @click="meunItemClick(jtem)"
+                        >
+                            {{ jtem.name }}
+                        </el-menu-item>
                     </template>
                 </el-sub-menu>
             </template>
@@ -50,6 +55,7 @@ import {
 } from '@element-plus/icons-vue';
 import { useUserStore } from '@/store/user/user';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 const iconList = [SwitchFilled, Histogram, Tools, Menu, Comment];
 
 //props
@@ -64,6 +70,18 @@ withDefaults(
 
 const userStore = useUserStore();
 const { userMenus } = storeToRefs(userStore);
+const router = useRouter();
+const splitUrl = (url: string): string => {
+    return url.substring(5);
+};
+const meunItemClick = (menu: any) => {
+    const urlName = splitUrl(menu.url);
+    userStore.currRouteUrl = urlName;
+    userStore.currMenuId = menu.id;
+    router.push({
+        path: urlName,
+    });
+};
 </script>
 
 <style scoped lang="less">
